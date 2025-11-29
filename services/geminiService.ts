@@ -4,7 +4,9 @@ import { GoogleGenAI, Chat } from "@google/genai";
 const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
 
 if (!ai) {
-  console.warn("API_KEY environment variable not set. Gemini API calls will fail.");
+  console.warn(
+    "API_KEY environment variable not set. Gemini API calls will fail. If you are deploying this application, you must set the API_KEY environment variable in your hosting provider's settings for the AI chat to function."
+  );
 }
 
 export const isApiConfigured = (): boolean => {

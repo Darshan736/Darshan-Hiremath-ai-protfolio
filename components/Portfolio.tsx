@@ -21,11 +21,7 @@ const projects: Project[] = [
   },
 ];
 
-interface PortfolioProps {
-    onInitiateChat: () => void;
-}
-
-const Portfolio: React.FC<PortfolioProps> = ({ onInitiateChat }) => {
+const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
 
   const renderContent = () => {
@@ -33,7 +29,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onInitiateChat }) => {
       case 'about':
         return (
           <div>
-            <h2 className="font-display text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">About Me</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">About Me</h2>
             <p className="mt-4 text-gray-300 leading-relaxed">
               I am a first-year Electronics and Communication Engineering (ECE) student with a deep passion for Artificial Intelligence, Automation, and Robotics. I am fascinated by the potential of AI to simplify complex problems and automate repetitive tasks to improve efficiency and quality of life.
             </p>
@@ -60,10 +56,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onInitiateChat }) => {
         return (
           <div>
             <div className="flex justify-between items-center">
-                <h2 className="font-display text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Projects</h2>
-                <button onClick={onInitiateChat} className="px-4 py-2 text-sm bg-[#ff4e42]/20 border border-[#ff4e42] text-[#ff4e42] rounded-md hover:bg-[#ff4e42] hover:text-white transition-colors">
-                    Talk to me
-                </button>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Projects</h2>
             </div>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               {projects.map((project, index) => (
@@ -75,22 +68,22 @@ const Portfolio: React.FC<PortfolioProps> = ({ onInitiateChat }) => {
       case 'contact':
         return (
           <div>
-            <h2 className="font-display text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Get In Touch</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Get In Touch</h2>
              <p className="mt-4 text-gray-300 leading-relaxed">
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious vision.
             </p>
             <div className="mt-6 flex flex-col space-y-4">
-               <a href="https://github.com/darshanhiremath12-rgb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <GithubIcon className="w-6 h-6" />
-                <span>github.com/darshanhiremath12-rgb</span>
+               <a href="https://github.com/darshanhiremath12-rgb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
+                <GithubIcon className="w-6 h-6 flex-shrink-0" />
+                <span className="break-all">github.com/darshanhiremath12-rgb</span>
               </a>
-              <a href="https://www.linkedin.com/in/darshan-hiremath-251887381" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <LinkedinIcon className="w-6 h-6" />
-                <span>linkedin.com/in/darshan-hiremath-251887381</span>
+              <a href="https://www.linkedin.com/in/darshan-hiremath-251887381" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
+                <LinkedinIcon className="w-6 h-6 flex-shrink-0" />
+                <span className="break-all">linkedin.com/in/darshan-hiremath-251887381</span>
               </a>
-              <a href="mailto:darshanhiremath848@gmail.com" className="flex items-center gap-4 text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <MailIcon className="w-6 h-6" />
-                <span>darshanhiremath848@gmail.com</span>
+              <a href="mailto:darshanhiremath848@gmail.com" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
+                <MailIcon className="w-6 h-6 flex-shrink-0" />
+                <span className="break-all">darshanhiremath848@gmail.com</span>
               </a>
             </div>
           </div>
@@ -103,8 +96,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ onInitiateChat }) => {
   return (
     <div className="w-full h-full glass-pane rounded-lg flex flex-col p-2">
       <div className="flex-shrink-0 p-2">
-         <h1 className="font-display text-4xl font-black text-white uppercase tracking-widest">DARSHAN</h1>
-         <p className="text-md text-gray-400">ECE Student // AI & Robotics Enthusiast</p>
+         <h1 className="font-display text-3xl sm:text-4xl font-black text-white uppercase tracking-widest">DARSHAN</h1>
+         <p className="text-sm sm:text-md text-gray-400">ECE Student // AI & Robotics Enthusiast</p>
       </div>
       <div className="flex-shrink-0 border-b border-[#ff4e42]/20 px-2">
         <nav className="flex space-x-4">

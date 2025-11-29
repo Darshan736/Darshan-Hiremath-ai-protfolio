@@ -1,91 +1,51 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Chat } from '@google/genai';
 import ThreeScene from './components/ThreeScene';
 import Terminal from './components/Terminal';
 import Portfolio from './components/Portfolio';
 import { TerminalMessage } from './types';
-import { createChat, isApiConfigured } from './services/geminiService';
 
 const initialMessages: TerminalMessage[] = [
   { text: 'SYSTEM BOOTING...', type: 'system' },
   { text: 'LOADING DARSHAN_PORTFOLIO_V1.0', type: 'system' },
-  { text: 'AI CORE ONLINE. AWAITING COMMAND.', type: 'response' },
+  { text: 'AWAITING USER INTERACTION.', type: 'system' },
 ];
+
+const defaultTrackName = 'aMused - Freedom';
+const defaultTrackUrl = 'https://assets.codepen.io/217233/aMused_-_Freedom.mp3';
 
 export default function App() {
   const [messages, setMessages] = useState<TerminalMessage[]>(initialMessages);
   const [frequencyData, setFrequencyData] = useState<Uint8Array | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState('');
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
-  const chatRef = useRef<Chat | null>(null);
-  const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
-  const addMessage = useCallback((text: string, type: 'user' | 'response' | 'system' | 'error') => {
+  const addMessage = useCallback((text: string, type: 'system' | 'error') => {
     setMessages(prev => [...prev, { text, type }]);
   }, []);
 
-  const handleSendMessage = useCallback(async (message: string) => {
-    if (!chatRef.current) {
-        if (!isApiConfigured()) {
-            addMessage('ERROR: AI chat is disabled. API key not configured by host.', 'error');
-        } else {
-            addMessage('ERROR: Chat not initialized. Cannot send message.', 'error');
-        }
-        return;
+  const setupAudio = useCallback((url: string, trackName: string) => {
+    setIsAudioLoading(true);
+    setCurrentTrack('');
+    addMessage(`Initializing audio: ${trackName}`, 'system');
+    
+    // 1. Clean up previous audio player and source node
+    if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current.removeAttribute('src');
+        audioPlayerRef.current.load();
+    }
+    if (audioSourceRef.current) {
+        audioSourceRef.current.disconnect();
     }
     
-    addMessage(`USER: ${message}`, 'user');
-
-    let fullResponse = '';
-    let responseMessageIndex = -1;
-
-    // Add a placeholder for the streaming response
-    setMessages(prev => {
-        // FIX: The `as const` assertion prevents TypeScript from widening the type of 'response'
-        // to a generic 'string', ensuring it matches the stricter 'TerminalMessage' type.
-        const newMessages = [...prev, { text: 'AI: ', type: 'response' as const }];
-        responseMessageIndex = newMessages.length - 1;
-        return newMessages;
-    });
-
-    try {
-        const stream = await chatRef.current.sendMessageStream({ message });
-        for await (const chunk of stream) {
-            // FIX: The text from a streaming chunk can be undefined. Coalesce to an empty string
-            // to prevent "undefined" from appearing in the output.
-            fullResponse += chunk.text || '';
-            setMessages(prev => {
-                const newMessages = [...prev];
-                if (newMessages[responseMessageIndex]) {
-                  newMessages[responseMessageIndex] = { text: `AI: ${fullResponse}`, type: 'response' };
-                }
-                return newMessages;
-            });
-        }
-    } catch (error) {
-        console.error("Gemini chat error:", error);
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-        setMessages(prev => {
-            const newMessages = [...prev];
-            if (newMessages[responseMessageIndex]) {
-              newMessages[responseMessageIndex] = { text: `ERROR: ${errorMessage}`, type: 'error' };
-            }
-            return newMessages;
-        });
-    }
-  }, [addMessage]);
-
-  const handleInitiateChat = useCallback(() => {
-    addMessage('AI: Feel free to ask me anything about my skills, projects, or my thoughts on AI and robotics.', 'response');
-    terminalInputRef.current?.focus();
-  }, [addMessage]);
-  
-  const initAudio = useCallback(() => {
+    // 2. Initialize AudioContext and Analyser on first run
     if (!audioContextRef.current) {
       try {
         const context = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -104,52 +64,82 @@ export default function App() {
       } catch (e) {
         console.error("Error initializing AudioContext", e);
         addMessage('ERROR: AUDIO SYSTEM FAILED TO INITIALIZE.', 'error');
+        setIsAudioLoading(false);
+        return;
       }
     }
-    return !!audioContextRef.current;
-  }, [addMessage]);
 
-  const connectAudioSource = useCallback((audioElement: HTMLAudioElement) => {
-    if (!audioContextRef.current || !analyserRef.current) return;
-    if (audioSourceRef.current) {
-      audioSourceRef.current.disconnect();
-    }
-    const source = audioContextRef.current.createMediaElementSource(audioElement);
+    // 3. Create a new player and source for the new track
+    const player = new Audio(url);
+    player.crossOrigin = "anonymous";
+    player.loop = true;
+    audioPlayerRef.current = player;
+
+    const source = audioContextRef.current.createMediaElementSource(player);
     audioSourceRef.current = source;
-    source.connect(analyserRef.current);
-    audioPlayerRef.current = audioElement;
+    source.connect(analyserRef.current!);
 
-    audioElement.onplay = () => setIsAudioPlaying(true);
-    audioElement.onpause = () => setIsAudioPlaying(false);
-    audioElement.onended = () => setIsAudioPlaying(false);
-
-  }, []);
-
+    // 4. Set up event listeners
+    player.onplay = () => {
+      setIsAudioPlaying(true);
+      setIsAudioLoading(false);
+      setCurrentTrack(trackName);
+      addMessage(`Playback started.`, 'system');
+    };
+    player.onpause = () => setIsAudioPlaying(false);
+    player.onended = () => setIsAudioPlaying(false);
+    player.onerror = () => {
+      const error = player.error;
+      console.error("Audio player error", error);
+      let message = 'Unknown audio error.';
+      if (error) {
+          switch (error.code) {
+              case error.MEDIA_ERR_ABORTED:
+                  message = 'Playback aborted by the user.';
+                  break;
+              case error.MEDIA_ERR_NETWORK:
+                  message = 'A network error caused the download to fail.';
+                  break;
+              case error.MEDIA_ERR_DECODE:
+                  message = 'An error occurred while decoding the media.';
+                  break;
+              case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                  message = 'The audio format is not supported or the source could not be found.';
+                  break;
+              default:
+                  message = `An unknown error occurred. Code: ${error.code}`;
+                  break;
+          }
+      }
+      addMessage(`ERROR: FAILED TO LOAD TRACK: ${trackName}. ${message}`, 'error');
+      setIsAudioPlaying(false);
+      setIsAudioLoading(false);
+      setCurrentTrack('ERROR');
+    };
+    
+    // 5. Attempt to play
+    const playPromise = player.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn("Autoplay prevented:", error.message);
+        if (audioContextRef.current?.state === 'suspended') {
+          addMessage('Audio context suspended. Click play to start.', 'system');
+        }
+        setIsAudioLoading(false);
+      });
+    }
+  }, [addMessage]);
+  
   const startApp = useCallback(() => {
     if(showWelcome) {
        setShowWelcome(false);
-       if(initAudio() && audioContextRef.current?.state === 'suspended') {
-         audioContextRef.current.resume();
-       }
-       if (!chatRef.current) {
-           if (isApiConfigured()) {
-               const chat = createChat();
-               if (chat) {
-                   chatRef.current = chat;
-                   addMessage('CHAT INTERFACE INITIALIZED.', 'system');
-               } else {
-                   addMessage('ERROR: FAILED TO INITIALIZE CHAT.', 'error');
-               }
-           } else {
-               addMessage('ERROR: AI features are disabled. API key not configured by host.', 'error');
-           }
-       }
+       setupAudio(defaultTrackUrl, defaultTrackName);
     }
-  }, [showWelcome, initAudio, addMessage]);
+  }, [showWelcome, setupAudio]);
 
   useEffect(() => {
     const animationFrameId = requestAnimationFrame(function animate() {
-      if (analyserRef.current && frequencyData) {
+      if (analyserRef.current && frequencyData && audioPlayerRef.current && !audioPlayerRef.current.paused) {
         analyserRef.current.getByteFrequencyData(frequencyData);
         setFrequencyData(new Uint8Array(frequencyData));
       }
@@ -158,20 +148,67 @@ export default function App() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [frequencyData]);
 
+  const handlePlayPause = useCallback(() => {
+    const player = audioPlayerRef.current;
+    if (player && !isAudioLoading) {
+      if (player.paused) {
+        if (audioContextRef.current?.state === 'suspended') {
+          audioContextRef.current.resume().then(() => {
+            player.play().catch(err => {
+              console.error("Play action failed after resume:", err)
+              addMessage('ERROR: Playback failed.', 'error');
+            });
+          });
+        } else {
+          player.play().catch(err => {
+            console.error("Play action failed:", err);
+            addMessage('ERROR: Playback failed.', 'error');
+          });
+        }
+      } else {
+        player.pause();
+      }
+    }
+  }, [isAudioLoading, addMessage]);
+
+  const handleAudioUpload = useCallback((file: File) => {
+    // Revoke the old blob URL if it exists to prevent memory leaks
+    if (audioPlayerRef.current && audioPlayerRef.current.src.startsWith('blob:')) {
+      URL.revokeObjectURL(audioPlayerRef.current.src);
+    }
+    const fileURL = URL.createObjectURL(file);
+    setupAudio(fileURL, file.name);
+  }, [setupAudio]);
+  
+  useEffect(() => {
+    return () => {
+      // Component unmount cleanup
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        if (audioPlayerRef.current.src.startsWith('blob:')) {
+          URL.revokeObjectURL(audioPlayerRef.current.src);
+        }
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(e => console.error('Failed to close AudioContext', e));
+      }
+    }
+  }, []);
+
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#0a0e17]">
       {showWelcome && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0e17]/80 backdrop-blur-sm">
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0e17]/80 backdrop-blur-sm text-center p-4">
           <div className="text-center p-8">
-            <h1 className="font-display text-5xl md:text-7xl font-bold text-white uppercase tracking-widest">Darshan</h1>
-            <h2 className="mt-2 text-xl md:text-2xl text-[#ff4e42] font-mono">AI & Robotics Portfolio</h2>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold text-white uppercase tracking-widest">Darshan</h1>
+            <h2 className="mt-2 text-lg sm:text-xl md:text-2xl text-[#ff4e42] font-mono">AI & Robotics Portfolio</h2>
             <p className="mt-6 max-w-2xl text-gray-300">
               This is an interactive portfolio experience featuring a WebGL audio visualizer.
               Click below to enter and activate the audio context.
             </p>
             <button
               onClick={startApp}
-              className="mt-8 px-8 py-3 bg-[#ff4e42] text-white font-bold uppercase tracking-wider rounded-md transition-all duration-300 hover:bg-white hover:text-[#ff4e42] hover:shadow-lg hover:shadow-[#ff4e42]/30"
+              className="mt-8 px-8 py-3 bg-[#ff4e42] text-white font-bold uppercase tracking-wider rounded-md transition-all duration-300 hover:bg-white hover:text-[#ff4e42] hover:shadow-lg hover:shadow-[#ff4e42]/30 active:scale-95"
             >
               Enter
             </button>
@@ -179,17 +216,18 @@ export default function App() {
         </div>
       )}
       <ThreeScene frequencyData={frequencyData} isAudioPlaying={isAudioPlaying} />
-      <div className={`absolute inset-0 grid grid-cols-1 lg:grid-cols-3 grid-rows-3 gap-4 p-4 transition-opacity duration-1000 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
-        <div className="lg:col-span-2 lg:row-span-2">
-          <Portfolio onInitiateChat={handleInitiateChat} />
+      <div className={`absolute inset-0 grid grid-cols-1 grid-rows-5 lg:grid-cols-3 lg:grid-rows-3 gap-4 p-4 transition-opacity duration-1000 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="row-span-3 lg:col-span-2 lg:row-span-2 min-h-0">
+          <Portfolio />
         </div>
-        <div className="lg:col-start-3 lg:row-span-3">
+        <div className="row-span-2 lg:col-start-3 lg:row-span-3 min-h-0">
           <Terminal 
             messages={messages} 
-            audioPlayerRef={audioPlayerRef} 
-            connectAudioSource={connectAudioSource}
-            onSendMessage={handleSendMessage}
-            inputRef={terminalInputRef}
+            isPlaying={isAudioPlaying}
+            currentTrackName={currentTrack}
+            isAudioLoading={isAudioLoading}
+            onPlayPause={handlePlayPause}
+            onAudioUpload={handleAudioUpload}
           />
         </div>
       </div>
