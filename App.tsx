@@ -4,7 +4,7 @@ import ThreeScene from './components/ThreeScene';
 import Terminal from './components/Terminal';
 import Portfolio from './components/Portfolio';
 import { TerminalMessage } from './types';
-import { createChat } from './services/geminiService';
+import { createChat, isApiConfigured } from './services/geminiService';
 
 const initialMessages: TerminalMessage[] = [
   { text: 'SYSTEM BOOTING...', type: 'system' },
@@ -31,7 +31,11 @@ export default function App() {
 
   const handleSendMessage = useCallback(async (message: string) => {
     if (!chatRef.current) {
-        addMessage('ERROR: Chat not initialized.', 'error');
+        if (!isApiConfigured()) {
+            addMessage('ERROR: AI chat is disabled. API key not configured by host.', 'error');
+        } else {
+            addMessage('ERROR: Chat not initialized. Cannot send message.', 'error');
+        }
         return;
     }
     
@@ -42,7 +46,9 @@ export default function App() {
 
     // Add a placeholder for the streaming response
     setMessages(prev => {
-        const newMessages = [...prev, { text: 'AI: ', type: 'response' }];
+        // FIX: The `as const` assertion prevents TypeScript from widening the type of 'response'
+        // to a generic 'string', ensuring it matches the stricter 'TerminalMessage' type.
+        const newMessages = [...prev, { text: 'AI: ', type: 'response' as const }];
         responseMessageIndex = newMessages.length - 1;
         return newMessages;
     });
@@ -50,7 +56,9 @@ export default function App() {
     try {
         const stream = await chatRef.current.sendMessageStream({ message });
         for await (const chunk of stream) {
-            fullResponse += chunk.text;
+            // FIX: The text from a streaming chunk can be undefined. Coalesce to an empty string
+            // to prevent "undefined" from appearing in the output.
+            fullResponse += chunk.text || '';
             setMessages(prev => {
                 const newMessages = [...prev];
                 if (newMessages[responseMessageIndex]) {
@@ -124,12 +132,16 @@ export default function App() {
          audioContextRef.current.resume();
        }
        if (!chatRef.current) {
-           const chat = createChat();
-           if (chat) {
-               chatRef.current = chat;
-               addMessage('CHAT INTERFACE INITIALIZED.', 'system');
+           if (isApiConfigured()) {
+               const chat = createChat();
+               if (chat) {
+                   chatRef.current = chat;
+                   addMessage('CHAT INTERFACE INITIALIZED.', 'system');
+               } else {
+                   addMessage('ERROR: FAILED TO INITIALIZE CHAT.', 'error');
+               }
            } else {
-               addMessage('ERROR: FAILED TO INITIALIZE CHAT.', 'error');
+               addMessage('ERROR: AI features are disabled. API key not configured by host.', 'error');
            }
        }
     }

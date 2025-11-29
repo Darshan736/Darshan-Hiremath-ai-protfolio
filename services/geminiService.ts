@@ -7,6 +7,10 @@ if (!ai) {
   console.warn("API_KEY environment variable not set. Gemini API calls will fail.");
 }
 
+export const isApiConfigured = (): boolean => {
+    return !!ai;
+};
+
 export const createChat = (): Chat | null => {
     if (!ai) return null;
     return ai.chats.create({
