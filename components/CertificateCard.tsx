@@ -9,19 +9,19 @@ interface CertificateCardProps {
 
 const CertificateCard: React.FC<CertificateCardProps> = ({ certificate }) => {
   return (
-    <div className="bg-gray-800/50 p-4 rounded-lg border border-transparent hover:border-[#ff4e42]/50 transition-all duration-300 flex flex-col h-full group">
-      <div className="flex items-start justify-between">
-         <div className="bg-[#ff4e42]/10 p-2 rounded-full text-[#ff4e42] group-hover:bg-[#ff4e42]/20 transition-colors">
+    <div className="bg-[#0f1420] p-5 rounded-lg border border-gray-800 hover:border-[#ff4e42]/40 transition-all duration-300 flex flex-col h-full group hover:-translate-y-1 hover:shadow-lg hover:shadow-black/40">
+      <div className="flex items-start justify-between mb-2">
+         <div className="bg-gray-800 p-2 rounded-md text-gray-400 group-hover:text-[#ff4e42] transition-colors border border-gray-700">
             <BadgeIcon className="w-5 h-5" />
          </div>
-         <span className="text-xs text-gray-500 font-mono border border-gray-700 px-2 py-1 rounded">{certificate.date}</span>
+         <span className="text-[10px] font-bold text-gray-500 font-mono bg-gray-900 px-2 py-1 rounded border border-gray-800">{certificate.date}</span>
       </div>
-      <h3 className="mt-3 text-lg font-bold text-gray-100 group-hover:text-[#ff4e42] transition-colors">{certificate.title}</h3>
-      <p className="text-xs text-[#ff4e42] font-bold uppercase tracking-wide mt-1">{certificate.issuer}</p>
-      <p className="mt-2 text-gray-400 text-sm flex-grow">{certificate.description}</p>
+      <h3 className="mt-2 text-base font-bold text-white group-hover:text-[#ff4e42] transition-colors">{certificate.title}</h3>
+      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{certificate.issuer}</p>
+      <p className="mt-3 text-gray-400 text-sm leading-relaxed flex-grow font-light">{certificate.description}</p>
       {certificate.link && certificate.link !== '#' && (
-          <a href={certificate.link} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-white transition-colors">
-            Verify &rarr;
+          <a href={certificate.link} target="_blank" rel="noopener noreferrer" className="mt-5 self-start inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors border-b border-transparent hover:border-[#ff4e42] pb-0.5">
+            Verify Credential &rarr;
           </a>
       )}
     </div>

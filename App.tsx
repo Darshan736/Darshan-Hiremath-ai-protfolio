@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ThreeScene from './components/ThreeScene';
 import Terminal from './components/Terminal';
@@ -134,7 +135,6 @@ export default function App() {
   const startApp = useCallback(() => {
     if(showWelcome) {
        setShowWelcome(false);
-       // Removed default audio setup to prevent autoplay
     }
   }, [showWelcome]);
 
@@ -197,27 +197,28 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#0a0e17]">
+    <div className="relative w-full h-screen overflow-hidden bg-[#05070a]">
       {showWelcome && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0e17]/80 backdrop-blur-sm text-center p-4">
-          <div className="text-center p-8">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold text-white uppercase tracking-widest">Darshan</h1>
-            <h2 className="mt-2 text-lg sm:text-xl md:text-2xl text-[#ff4e42] font-mono">AI & Robotics Portfolio</h2>
-            <p className="mt-6 max-w-2xl text-gray-300">
-              This is an interactive portfolio experience featuring a WebGL audio visualizer.
-              Click below to enter.
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#05070a]/90 backdrop-blur-md text-center p-4">
+          <div className="text-center p-8 border border-white/5 rounded-2xl bg-white/5 backdrop-blur-xl shadow-2xl max-w-2xl w-full">
+            <h1 className="font-display text-3xl sm:text-5xl font-black text-white uppercase tracking-widest mb-2">DARSHAN.B.HIREMATH</h1>
+            <h2 className="text-sm sm:text-base text-[#ff4e42] font-mono tracking-[0.3em] uppercase mb-8">AI & Robotics Portfolio</h2>
+            <p className="mb-10 text-gray-400 font-light leading-relaxed max-w-lg mx-auto">
+              An interactive 3D audio-reactive experience.
+              <br/>
+              Enter to explore projects, certifications, and research.
             </p>
             <button
               onClick={startApp}
-              className="mt-8 px-8 py-3 bg-[#ff4e42] text-white font-bold uppercase tracking-wider rounded-md transition-all duration-300 hover:bg-white hover:text-[#ff4e42] hover:shadow-lg hover:shadow-[#ff4e42]/30 active:scale-95"
+              className="group relative px-10 py-4 bg-transparent border border-[#ff4e42] text-[#ff4e42] font-bold uppercase tracking-widest text-sm transition-all duration-300 hover:bg-[#ff4e42] hover:text-white hover:shadow-[0_0_20px_rgba(255,78,66,0.4)]"
             >
-              Enter
+              <span className="relative z-10">Initialize System</span>
             </button>
           </div>
         </div>
       )}
       <ThreeScene frequencyData={frequencyData} isAudioPlaying={isAudioPlaying} />
-      <div className={`absolute inset-0 grid grid-cols-1 grid-rows-5 lg:grid-cols-3 lg:grid-rows-3 gap-4 p-4 transition-opacity duration-1000 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`absolute inset-0 grid grid-cols-1 grid-rows-5 lg:grid-cols-3 lg:grid-rows-3 gap-6 p-4 sm:p-6 transition-opacity duration-1000 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
         <div className="row-span-3 lg:col-span-2 lg:row-span-2 min-h-0">
           <Portfolio />
         </div>

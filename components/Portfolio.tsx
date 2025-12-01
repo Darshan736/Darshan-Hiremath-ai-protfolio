@@ -75,25 +75,27 @@ const Portfolio: React.FC = () => {
     switch (activeTab) {
       case 'about':
         return (
-          <div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">About Me</h2>
-            <p className="mt-4 text-gray-300 leading-relaxed">
-              I am a first-year Electronics and Communication Engineering (ECE) student with a deep passion for Artificial Intelligence, Automation, and Robotics. I am fascinated by the potential of AI to simplify complex problems and automate repetitive tasks to improve efficiency and quality of life.
-            </p>
-             <p className="mt-4 text-gray-300 leading-relaxed">
-              My hands-on experience includes building AI agents and creating powerful automation workflows with n8n. I am currently expanding my knowledge in robotics and how to seamlessly integrate it with AI, aiming to build intelligent systems for the future.
-            </p>
-            <div className="mt-6">
-              <h3 className="text-xl font-bold text-gray-200">Core Interests</h3>
-              <div className="mt-4 flex flex-wrap gap-4">
-                <div className="flex items-center gap-2 bg-gray-800/50 px-3 py-1 rounded-md">
-                  <CpuIcon className="w-5 h-5 text-[#ff4e42]" /> <span>Artificial Intelligence</span>
+          <div className="max-w-3xl">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider mb-6">About Me</h2>
+            <div className="space-y-6 text-gray-200 text-base leading-loose font-light">
+              <p>
+                I am a first-year Electronics and Communication Engineering (ECE) student with a deep passion for Artificial Intelligence, Automation, and Robotics. I am fascinated by the potential of AI to simplify complex problems and automate repetitive tasks to improve efficiency and quality of life.
+              </p>
+               <p>
+                My hands-on experience includes building AI agents and creating powerful automation workflows with n8n. I am currently expanding my knowledge in robotics and how to seamlessly integrate it with AI, aiming to build intelligent systems for the future.
+              </p>
+            </div>
+            <div className="mt-8">
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Core Interests</h3>
+              <div className="flex flex-wrap gap-3">
+                <div className="flex items-center gap-2 bg-gray-800/80 border border-gray-700/50 px-4 py-2 rounded-md transition-colors hover:border-[#ff4e42]/50">
+                  <CpuIcon className="w-5 h-5 text-[#ff4e42]" /> <span className="text-sm font-medium">Artificial Intelligence</span>
                 </div>
-                <div className="flex items-center gap-2 bg-gray-800/50 px-3 py-1 rounded-md">
-                   <RocketIcon className="w-5 h-5 text-[#ff4e42]" /> <span>Automation</span>
+                <div className="flex items-center gap-2 bg-gray-800/80 border border-gray-700/50 px-4 py-2 rounded-md transition-colors hover:border-[#ff4e42]/50">
+                   <RocketIcon className="w-5 h-5 text-[#ff4e42]" /> <span className="text-sm font-medium">Automation</span>
                 </div>
-                 <div className="flex items-center gap-2 bg-gray-800/50 px-3 py-1 rounded-md">
-                  <RobotIcon className="w-5 h-5 text-[#ff4e42]" /> <span>Robotics</span>
+                 <div className="flex items-center gap-2 bg-gray-800/80 border border-gray-700/50 px-4 py-2 rounded-md transition-colors hover:border-[#ff4e42]/50">
+                  <RobotIcon className="w-5 h-5 text-[#ff4e42]" /> <span className="text-sm font-medium">Robotics</span>
                 </div>
               </div>
             </div>
@@ -102,10 +104,10 @@ const Portfolio: React.FC = () => {
       case 'projects':
         return (
           <div>
-            <div className="flex justify-between items-center">
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Projects</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">Projects</h2>
             </div>
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {projects.map((project, index) => (
                 <ProjectCard key={index} project={project} />
               ))}
@@ -115,10 +117,10 @@ const Portfolio: React.FC = () => {
       case 'certificates':
         return (
           <div>
-            <div className="flex justify-between items-center">
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Certificates & Badges</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">Certificates & Badges</h2>
             </div>
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {certificates.map((cert, index) => (
                 <CertificateCard key={index} certificate={cert} />
               ))}
@@ -128,22 +130,22 @@ const Portfolio: React.FC = () => {
       case 'contact':
         return (
           <div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Get In Touch</h2>
-             <p className="mt-4 text-gray-300 leading-relaxed">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider mb-6">Get In Touch</h2>
+             <p className="text-gray-200 leading-loose mb-8 max-w-2xl">
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious vision.
             </p>
-            <div className="mt-6 flex flex-col space-y-4">
-               <a href="https://github.com/darshanhiremath12-rgb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <GithubIcon className="w-6 h-6 flex-shrink-0" />
-                <span className="break-all">github.com/darshanhiremath12-rgb</span>
+            <div className="flex flex-col space-y-6">
+               <a href="https://github.com/darshanhiremath12-rgb" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-white transition-colors p-4 bg-gray-800/40 rounded-lg border border-transparent hover:border-gray-600">
+                <GithubIcon className="w-6 h-6 flex-shrink-0 text-gray-400 group-hover:text-[#ff4e42] transition-colors" />
+                <span className="break-all font-mono">github.com/darshanhiremath12-rgb</span>
               </a>
-              <a href="https://www.linkedin.com/in/darshan-hiremath-251887381" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <LinkedinIcon className="w-6 h-6 flex-shrink-0" />
-                <span className="break-all">linkedin.com/in/darshan-hiremath-251887381</span>
+              <a href="https://www.linkedin.com/in/darshan-hiremath-251887381" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-white transition-colors p-4 bg-gray-800/40 rounded-lg border border-transparent hover:border-gray-600">
+                <LinkedinIcon className="w-6 h-6 flex-shrink-0 text-gray-400 group-hover:text-[#ff4e42] transition-colors" />
+                <span className="break-all font-mono">linkedin.com/in/darshan-hiremath-251887381</span>
               </a>
-              <a href="mailto:darshanhiremath848@gmail.com" className="flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-[#ff4e42] transition-colors">
-                <MailIcon className="w-6 h-6 flex-shrink-0" />
-                <span className="break-all">darshanhiremath848@gmail.com</span>
+              <a href="mailto:darshanhiremath848@gmail.com" className="group flex items-center gap-4 text-base sm:text-lg text-gray-300 hover:text-white transition-colors p-4 bg-gray-800/40 rounded-lg border border-transparent hover:border-gray-600">
+                <MailIcon className="w-6 h-6 flex-shrink-0 text-gray-400 group-hover:text-[#ff4e42] transition-colors" />
+                <span className="break-all font-mono">darshanhiremath848@gmail.com</span>
               </a>
             </div>
           </div>
@@ -154,40 +156,29 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full glass-pane rounded-lg flex flex-col p-2">
-      <div className="flex-shrink-0 p-2">
-         <h1 className="font-display text-3xl sm:text-4xl font-black text-white uppercase tracking-widest">DARSHAN</h1>
-         <p className="text-sm sm:text-md text-gray-400">ECE Student // AI & Robotics Enthusiast</p>
+    <div className="w-full h-full glass-pane rounded-xl flex flex-col p-2 overflow-hidden">
+      <div className="flex-shrink-0 p-4 pb-2">
+         <h1 className="font-display text-2xl sm:text-3xl font-black text-white uppercase tracking-widest">DARSHAN.B.HIREMATH</h1>
+         <p className="text-sm font-bold text-[#ff4e42] tracking-wider mt-1">ECE Student // AI & Robotics Enthusiast</p>
       </div>
-      <div className="flex-shrink-0 border-b border-[#ff4e42]/20 px-2">
-        <nav className="flex space-x-4 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('about')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'about' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
-          >
-            About
-          </button>
-          <button
-            onClick={() => setActiveTab('projects')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'projects' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
-          >
-            Projects
-          </button>
-           <button
-            onClick={() => setActiveTab('certificates')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'certificates' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
-          >
-            Certificates
-          </button>
-          <button
-            onClick={() => setActiveTab('contact')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'contact' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
-          >
-            Contact
-          </button>
+      <div className="flex-shrink-0 border-b border-gray-800 px-4">
+        <nav className="flex space-x-6 overflow-x-auto no-scrollbar">
+          {['about', 'projects', 'certificates', 'contact'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`py-3 px-1 border-b-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                activeTab === tab 
+                  ? 'text-white border-[#ff4e42]' 
+                  : 'text-gray-500 border-transparent hover:text-gray-300 hover:border-gray-700'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </nav>
       </div>
-      <div className="flex-grow p-4 overflow-y-auto">
+      <div className="flex-grow p-4 sm:p-6 overflow-y-auto">
         {renderContent()}
       </div>
     </div>
