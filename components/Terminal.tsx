@@ -49,7 +49,7 @@ const Terminal: React.FC<TerminalProps> = ({ messages, isPlaying, currentTrackNa
       <div className="flex-shrink-0 p-2 border-t border-[#ff4e42]/20 space-y-2">
         <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-                <button onClick={onPlayPause} className="p-2 text-white bg-[#ff4e42]/30 rounded-full hover:bg-[#ff4e42]/60 transition-colors disabled:opacity-50" aria-label={isPlaying ? 'Pause audio' : 'Play audio'} disabled={isAudioLoading}>
+                <button onClick={onPlayPause} className="p-2 text-white bg-[#ff4e42]/30 rounded-full hover:bg-[#ff4e42]/60 transition-colors disabled:opacity-50" aria-label={isPlaying ? 'Pause audio' : 'Play audio'} disabled={isAudioLoading || !currentTrackName}>
                     {isPlaying ? <PauseIcon className="w-5 h-5"/> : <PlayIcon className="w-5 h-5" />}
                 </button>
                 <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-3 py-1.5 text-xs bg-gray-700/50 text-gray-300 rounded-md hover:bg-gray-600/50 transition-colors">
@@ -59,7 +59,7 @@ const Terminal: React.FC<TerminalProps> = ({ messages, isPlaying, currentTrackNa
                 <input type="file" accept="audio/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
             </div>
             <p className="text-xs text-gray-400 truncate flex-1 text-right ml-2">
-              {isAudioLoading ? 'LOADING AUDIO...' : `NOW PLAYING: ${currentTrackName}`}
+              {isAudioLoading ? 'LOADING AUDIO...' : (currentTrackName ? `NOW PLAYING: ${currentTrackName}` : 'SYSTEM READY')}
             </p>
         </div>
       </div>

@@ -6,6 +6,14 @@ export interface Project {
   link?: string;
 }
 
+export interface Certificate {
+  title: string;
+  issuer: string;
+  date: string;
+  description: string;
+  link?: string;
+}
+
 export interface TerminalMessage {
   text: string;
   type: 'user' | 'response' | 'system' | 'error';

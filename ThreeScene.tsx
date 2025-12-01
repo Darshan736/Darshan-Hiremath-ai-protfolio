@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -64,8 +65,7 @@ const vertexShader = `
   void main() {
     vNormal = normalize(normalMatrix * normal);
     float noise = snoise(position * 2.0 + time * 0.2) * 0.5 + 0.5;
-    // Modified to include a base level of movement (0.1) so the sphere breathes even without audio
-    vec3 newPosition = position + normal * noise * (0.1 + audioLevel * 2.0);
+    vec3 newPosition = position + normal * noise * audioLevel * 2.0;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
   }
 `;
@@ -78,13 +78,13 @@ const fragmentShader = `
   void main() {
     float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
     vec3 color = vec3(1.0, 0.3, 0.2) * (1.0 + audioLevel * 2.0);
-    // Modified to include a base level of brightness (0.8) so the sphere is visible without audio
-    gl_FragColor = vec4(color * intensity, 1.0) * (0.8 + audioLevel * 0.5);
+    gl_FragColor = vec4(color * intensity, 1.0) * (0.5 + audioLevel * 0.5);
   }
 `;
 
 const ThreeScene: React.FC<ThreeSceneProps> = ({ frequencyData, isAudioPlaying }) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  // FIX: Explicitly initialize useRef with null to prevent potential issues where an undefined initial value could cause downstream type errors.
   const sphereRef = useRef<THREE.Mesh | null>(null);
   const particlesRef = useRef<THREE.Points | null>(null);
 
@@ -142,6 +142,8 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ frequencyData, isAudioPlaying }
     // Particles
     const particleCount = 5000;
     const positions = new Float32Array(particleCount * 3);
+    // FIX: Replaced Math.random() with THREE.MathUtils.randFloatSpread to resolve a potential environment-specific error.
+    // This is also a more idiomatic way to generate random numbers in Three.js.
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3 + 0] = THREE.MathUtils.randFloatSpread(20);
       positions[i * 3 + 1] = THREE.MathUtils.randFloatSpread(20);

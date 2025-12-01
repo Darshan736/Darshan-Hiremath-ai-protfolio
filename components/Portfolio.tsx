@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
-import { Project } from '../types';
+import { Project, Certificate } from '../types';
 import ProjectCard from './ProjectCard';
+import CertificateCard from './CertificateCard';
 import { GithubIcon, LinkedinIcon, MailIcon, RobotIcon, CpuIcon, RocketIcon } from './Icons';
 
 const projects: Project[] = [
@@ -19,6 +21,51 @@ const projects: Project[] = [
     description: 'Built a collection of n8n workflows to automate repetitive personal and academic tasks, saving hours of manual work weekly.',
     tags: ['Automation', 'n8n', 'Productivity'],
   },
+];
+
+const certificates: Certificate[] = [
+  {
+    title: 'Prompt Engineering Guide',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Nov 1, 2025',
+    description: 'Mastered the art of crafting effective prompts to guide Large Language Models (LLMs) and generate desired outputs.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19847273'
+  },
+  {
+    title: 'Gen AI Agents',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Nov 1, 2025',
+    description: 'Learned to build and deploy autonomous AI agents capable of reasoning and using tools to perform complex tasks.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19844741'
+  },
+  {
+    title: 'Professional Machine Learning Engineer Study Guide',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Oct 19, 2025',
+    description: 'Comprehensive preparation covering model architecture, data pipeline engineering, and infrastructure optimization for ML.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19302325'
+  },
+  {
+    title: 'MLOps for Generative AI',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Oct 18, 2025',
+    description: 'Explored operationalizing Generative AI models, including deployment, monitoring, and maintenance pipelines.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19277294'
+  },
+  {
+    title: 'Introduction to Large Language Models',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Oct 18, 2025',
+    description: 'Gained a foundational understanding of LLMs, their architecture, capabilities, and use cases in modern AI.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19277237'
+  },
+  {
+    title: 'Introduction to Generative AI',
+    issuer: 'Google Cloud Skills Boost',
+    date: 'Oct 18, 2025',
+    description: 'Acquired core knowledge of Generative AI principles, differentiating it from discriminative AI, and exploring real-world applications.',
+    link: 'https://www.skills.google/public_profiles/2b5e9a6d-f1fb-4ecb-abbd-8c786d9278d2/badges/19275010'
+  }
 ];
 
 const Portfolio: React.FC = () => {
@@ -65,6 +112,19 @@ const Portfolio: React.FC = () => {
             </div>
           </div>
         );
+      case 'certificates':
+        return (
+          <div>
+            <div className="flex justify-between items-center">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#ff4e42] uppercase tracking-wider">Certificates & Badges</h2>
+            </div>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {certificates.map((cert, index) => (
+                <CertificateCard key={index} certificate={cert} />
+              ))}
+            </div>
+          </div>
+        );
       case 'contact':
         return (
           <div>
@@ -100,22 +160,28 @@ const Portfolio: React.FC = () => {
          <p className="text-sm sm:text-md text-gray-400">ECE Student // AI & Robotics Enthusiast</p>
       </div>
       <div className="flex-shrink-0 border-b border-[#ff4e42]/20 px-2">
-        <nav className="flex space-x-4">
+        <nav className="flex space-x-4 overflow-x-auto">
           <button
             onClick={() => setActiveTab('about')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors ${activeTab === 'about' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
+            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'about' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
           >
             About
           </button>
           <button
             onClick={() => setActiveTab('projects')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors ${activeTab === 'projects' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
+            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'projects' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
           >
             Projects
           </button>
+           <button
+            onClick={() => setActiveTab('certificates')}
+            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'certificates' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
+          >
+            Certificates
+          </button>
           <button
             onClick={() => setActiveTab('contact')}
-            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors ${activeTab === 'contact' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
+            className={`py-2 px-1 border-b-2 font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${activeTab === 'contact' ? 'text-[#ff4e42] border-[#ff4e42]' : 'text-gray-400 border-transparent hover:text-white'}`}
           >
             Contact
           </button>

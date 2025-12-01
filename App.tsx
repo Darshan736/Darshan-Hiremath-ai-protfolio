@@ -10,9 +10,6 @@ const initialMessages: TerminalMessage[] = [
   { text: 'AWAITING USER INTERACTION.', type: 'system' },
 ];
 
-const defaultTrackName = 'aMused - Freedom';
-const defaultTrackUrl = 'https://assets.codepen.io/217233/aMused_-_Freedom.mp3';
-
 export default function App() {
   const [messages, setMessages] = useState<TerminalMessage[]>(initialMessages);
   const [frequencyData, setFrequencyData] = useState<Uint8Array | null>(null);
@@ -70,8 +67,10 @@ export default function App() {
     }
 
     // 3. Create a new player and source for the new track
-    const player = new Audio(url);
+    // Setting crossOrigin BEFORE src is important for CORS to work correctly with Web Audio API
+    const player = new Audio();
     player.crossOrigin = "anonymous";
+    player.src = url;
     player.loop = true;
     audioPlayerRef.current = player;
 
@@ -88,9 +87,9 @@ export default function App() {
     };
     player.onpause = () => setIsAudioPlaying(false);
     player.onended = () => setIsAudioPlaying(false);
-    player.onerror = () => {
+    player.onerror = (e) => {
       const error = player.error;
-      console.error("Audio player error", error);
+      console.error("Audio player error:", error, e);
       let message = 'Unknown audio error.';
       if (error) {
           switch (error.code) {
@@ -110,6 +109,8 @@ export default function App() {
                   message = `An unknown error occurred. Code: ${error.code}`;
                   break;
           }
+      } else {
+        message = 'Network error or format not supported.';
       }
       addMessage(`ERROR: FAILED TO LOAD TRACK: ${trackName}. ${message}`, 'error');
       setIsAudioPlaying(false);
@@ -133,9 +134,9 @@ export default function App() {
   const startApp = useCallback(() => {
     if(showWelcome) {
        setShowWelcome(false);
-       setupAudio(defaultTrackUrl, defaultTrackName);
+       // Removed default audio setup to prevent autoplay
     }
-  }, [showWelcome, setupAudio]);
+  }, [showWelcome]);
 
   useEffect(() => {
     const animationFrameId = requestAnimationFrame(function animate() {
@@ -204,7 +205,7 @@ export default function App() {
             <h2 className="mt-2 text-lg sm:text-xl md:text-2xl text-[#ff4e42] font-mono">AI & Robotics Portfolio</h2>
             <p className="mt-6 max-w-2xl text-gray-300">
               This is an interactive portfolio experience featuring a WebGL audio visualizer.
-              Click below to enter and activate the audio context.
+              Click below to enter.
             </p>
             <button
               onClick={startApp}
