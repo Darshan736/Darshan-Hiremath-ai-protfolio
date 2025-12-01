@@ -200,9 +200,9 @@ export default function App() {
     <div className="relative w-full h-screen overflow-hidden bg-[#05070a]">
       {showWelcome && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#05070a]/90 backdrop-blur-md text-center p-4">
-          <div className="text-center p-8 border border-white/5 rounded-2xl bg-white/5 backdrop-blur-xl shadow-2xl max-w-2xl w-full">
-            <h1 className="font-display text-3xl sm:text-5xl font-black text-white uppercase tracking-widest mb-2">DARSHAN.B.HIREMATH</h1>
-            <h2 className="text-sm sm:text-base text-[#ff4e42] font-mono tracking-[0.3em] uppercase mb-8">AI & Robotics Portfolio</h2>
+          <div className="text-center p-6 sm:p-8 border border-white/5 rounded-2xl bg-white/5 backdrop-blur-xl shadow-2xl max-w-2xl w-full">
+            <h1 className="font-display text-lg sm:text-3xl md:text-4xl font-black text-white uppercase tracking-wide sm:tracking-widest mb-3 break-words leading-tight">DARSHAN.B.HIREMATH</h1>
+            <h2 className="text-xs sm:text-base text-[#ff4e42] font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-8">AI & Robotics Portfolio</h2>
             <p className="mb-10 text-gray-400 font-light leading-relaxed max-w-lg mx-auto">
               An interactive 3D audio-reactive experience.
               <br/>

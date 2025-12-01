@@ -158,7 +158,7 @@ const Portfolio: React.FC = () => {
   return (
     <div className="w-full h-full glass-pane rounded-xl flex flex-col p-2 overflow-hidden">
       <div className="flex-shrink-0 p-4 pb-2">
-         <h1 className="font-display text-2xl sm:text-3xl font-black text-white uppercase tracking-widest">DARSHAN.B.HIREMATH</h1>
+         <h1 className="font-display text-lg sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide sm:tracking-widest break-words leading-tight">DARSHAN.B.HIREMATH</h1>
          <p className="text-sm font-bold text-[#ff4e42] tracking-wider mt-1">ECE Student // AI & Robotics Enthusiast</p>
       </div>
       <div className="flex-shrink-0 border-b border-gray-800 px-4">
